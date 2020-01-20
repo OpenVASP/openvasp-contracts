@@ -37,7 +37,7 @@ You should **never** work on a clone of `master`, and you should **never** send 
 
 While you're working away in your branch it's quite possible that your `upstream` `master` may be updated. If this happens you should:
 
-1. [Stash](http://progit.org/book/ch6-3.html) any un-committed changes you need to
+1. [Stash](https://git-scm.com/book/en/v2/Git-Tools-Stashing-and-Cleaning) any un-committed changes you need to
 1. `git checkout master`
 1. `git pull upstream master --ff-only`
 1. `git checkout my-branch`
@@ -55,12 +55,12 @@ While working on your feature you may well create several branches, which is fin
 When you're ready to go you should confirm that you are up to date and rebased with `upstream` `master` (see "Handling updates from `upstream`" above) and then:
 
 1. `git push origin my-branch`
-1. Send a descriptive [pull request](http://help.github.com/pull-requests/) on GitHub.
-  - Make sure the pull request is **from** the branch on your fork **to** the `OpenVASP/openvasp-contracts` `master`.
-  - If your changes relate to a GitHub issue, add the issue number to the pull request description in the format `#123`.
+1. Send a descriptive [pull request](https://help.github.com/en/github/collaborating-with-issues-and-pull-requests/about-pull-requests) on GitHub.
+   - Make sure the pull request is **from** the branch on your fork **to** the `OpenVASP/openvasp-contracts` `master`.
+   - If your changes relate to a GitHub issue, add the issue number to the pull request description in the format `#123`.
 1. If GitHub determines that the pull request can be merged automatically, a test build will commence shortly after you raise the pull request. The build status will be reported on the pull request.
-  - If the build fails, there may be a problem with your changes which you will have to fix before the pull request can be merged. Follow the link to the build server and inspect the build logs to see what caused the failure.
-  - Occasionally, build failures may be due to problems on the build server rather than problems in your changes. If you determine this to be the case, please add a comment on the pull request and one of the maintainers will address the problem.
+   - If the build fails, there may be a problem with your changes which you will have to fix before the pull request can be merged. Follow the link to the build server and inspect the build logs to see what caused the failure.
+   - Occasionally, build failures may be due to problems on the build server rather than problems in your changes. If you determine this to be the case, please add a comment on the pull request and one of the maintainers will address the problem.
 
 ## What happens next?
 
