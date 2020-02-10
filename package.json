@@ -1,0 +1,38 @@
+{
+  "name": "vasp-contracts",
+  "version": "1.0.0-beta.1",
+  "description": "OpenVASP smart contracts",
+  "scripts": {
+    "docs": "npx solidity-docgen --solc-settings \"{remappings: ['@openzeppelin=$PWD/node_modules/@openzeppelin']}\"",
+    "test": "npx oz compile && mocha --exit --recursive test"
+  },
+  "keywords": [
+    "solidity",
+    "ethereum",
+    "smart",
+    "contracts",
+    "openvasp"
+  ],
+  "author": "OpenVASP Community",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/OpenVASP/openvasp-contracts/issues"
+  },
+  "homepage": "https://www.openvasp.org",
+  "devDependencies": {
+    "@openzeppelin/cli": "^2.6.0",
+    "@openzeppelin/contracts-ethereum-package": "^2.4.0",
+    "@openzeppelin/gsn-helpers": "^0.2.3",
+    "@openzeppelin/gsn-provider": "^0.1.9",
+    "@openzeppelin/test-environment": "^0.1.2",
+    "@openzeppelin/test-helpers": "^0.5.4",
+    "@openzeppelin/upgrades": "^2.6.0",
+    "@truffle/hdwallet-provider": "^1.0.30",
+    "chai": "^4.2.0",
+    "dotenv": "^8.2.0",
+    "ganache-cli": "^6.9.0",
+    "mocha": "^7.0.1",
+    "solidity-docgen": "^0.3.14",
+    "truffle": "^5.1.12"
+  }
+}
