@@ -1,0 +1,20 @@
+{
+  "manifestVersion": "2.2",
+  "contracts": {
+    "VASP": "VASP"
+  },
+  "dependencies": {},
+  "name": "open-vasp",
+  "version": "0.0.1-beta.1",
+  "telemetryOptIn": true,
+  "compiler": {
+    "manager": "openzeppelin",
+    "solcVersion": "0.5.16",
+    "compilerSettings": {
+      "optimizer": {
+        "enabled": false,
+        "runs": "200"
+      }
+    }
+  }
+}

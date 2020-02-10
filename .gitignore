@@ -1,0 +1,27 @@
+# dependencies directory
+node_modules
+
+# IntelliJ IDE
+.idea
+
+# local env variables
+.env
+
+# macOS
+.DS_Store
+
+# OpenZeppelin
+.openzeppelin/dev-*.json
+.openzeppelin/.session
+
+# truffle
+build/
+.node-xmlhttprequest-*
+
+# coverage directory used by tools like istanbul
+coverage
+coverage.json
+coverageEnv
+
+# runtime data
+allFiredEvents
