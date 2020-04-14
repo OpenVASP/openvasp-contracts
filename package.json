@@ -4,7 +4,8 @@
   "description": "OpenVASP smart contracts",
   "scripts": {
     "docs": "npx solidity-docgen --solc-settings \"{remappings: ['@openzeppelin=$PWD/node_modules/@openzeppelin']}\"",
-    "test": "npx oz compile && mocha --exit --recursive test"
+    "test": "npx oz compile && mocha --exit --recursive test",
+    "publish": "npx oz compile && npm publish"
   },
   "keywords": [
     "solidity",
@@ -20,7 +21,7 @@
   },
   "homepage": "https://www.openvasp.org",
   "devDependencies": {
-    "@openzeppelin/cli": "^2.6.0",
+    "@openzeppelin/cli": "^2.8.2",
     "@openzeppelin/contracts-ethereum-package": "^2.4.0",
     "@openzeppelin/gsn-helpers": "^0.2.3",
     "@openzeppelin/gsn-provider": "^0.1.9",
@@ -34,5 +35,10 @@
     "mocha": "^7.0.1",
     "solidity-docgen": "^0.3.14",
     "truffle": "^5.1.12"
-  }
+  },
+  "files": [
+    "build",
+    "contracts",
+    ".openzeppelin/*.json"
+  ]
 }

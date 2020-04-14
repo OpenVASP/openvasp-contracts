@@ -15,6 +15,11 @@
         "enabled": false,
         "runs": "200"
       }
+    },
+    "artifactsDir": "build/contracts",
+    "contractsDir": "contracts",
+    "typechain": {
+      "enabled": false
     }
   }
 }
