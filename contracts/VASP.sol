@@ -313,7 +313,7 @@ contract VASP is Initializable, Context, Ownable, AdministratorRole, IVASP {
     /*
      * @dev Sets the VASP postal address.
      */
-    function setPostalAddress(
+    function setPostalAddressLine(
         string calldata addressLine,
         string calldata postCode,
         string calldata town,
