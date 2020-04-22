@@ -3,11 +3,9 @@
 
 name: Release
 
-#on:
-#  push:
-#    tags: "*"
-
-on: [push]
+on:
+  push:
+    tags: "*"
 
 jobs:
   build:
@@ -26,4 +24,7 @@ jobs:
     - run: echo "ROPSTEN_NODE_URL=${{ secrets.ROPSTEN_NODE_URL }}" >> .env
     - run: echo "PRIVATE_KEY=${{ secrets.PRIVATE_KEY }}" >> .env
     - run: truffle migrate --network ropsten
+    - run: rm .env
+
+
 
