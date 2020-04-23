@@ -2,6 +2,19 @@
 
 This repository contains smart contracts for the reference implementation of the OpenVASP standard
 
+## How to create a new VASP smart contract
+
+You can use smart contract [Vasp Facade (0xb838ef6121b8093f425fdc336d59e1142c2e289)](https://ropsten.etherscan.io/address/0xb838ef6121b8093f425fdc336d59e1142c2e289) to create new instance of CASP smart contract. 
+After call method `build` you can see in transaction event `VaspCreated` where in first parameter you can see newVaspAddress.
+The address that broadcast transaction with `build` is automatically set as the owner and administrator.
+
+1. open page https://ropsten.etherscan.io/address/0xb838ef6121b8093f425fdc336d59e1142c2e289c#writeContract
+2. call metod `build` and fill 5 params
+3. check event `VaspCreated` in transaction
+
+
+# Build and deploy manually
+
 ## Running tests
 
 Execute `npm run test` command.
