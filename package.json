@@ -33,6 +33,7 @@
     "ganache-cli": "^6.9.0",
     "mocha": "^7.0.1",
     "solidity-docgen": "^0.3.14",
-    "truffle": "^5.1.12"
+    "truffle": "^5.1.12",
+    "truffle-plugin-verify": "^0.3.10"
   }
 }
