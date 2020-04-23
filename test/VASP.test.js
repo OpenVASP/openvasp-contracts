@@ -100,19 +100,9 @@ describe('VASP', function() {
         describe('during initialization', function() {
 
             it('owner is assigned', async function() {
-                await this.contract.initialize(owner, []);
+                await this.contract.initialize(owner);
 
                 expect((await this.contract.owner())).to.equal(owner);
-            });
-
-            describe('when initial list of administrators is specified', function() {
-
-                it('administrator role is assigned', async function() {
-                    await this.contract.initialize(owner, [administrator]);
-
-                    expect((await this.contract.isAdministrator(administrator))).to.equal(true);
-                });
-
             });
 
         });
@@ -120,7 +110,8 @@ describe('VASP', function() {
         describe('after initialization', function() {
 
             beforeEach(async function() {
-                await this.contract.initialize(owner, [administrator]);
+                await this.contract.initialize(owner);
+                await this.contract.addAdministrator(administrator, { from: owner });
             });
 
             describe('adding channel', function() {
