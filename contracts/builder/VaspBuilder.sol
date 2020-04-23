@@ -38,8 +38,8 @@ contract VaspBuilder is Initializable, IVaspBuilder {
     {
         address vasp = _factory.creatVasp(address(this));
 
-        //IAdministratorRole admin = IAdministratorRole(vasp);
-        //admin.addAdministrator(address(this));
+        IAdministratorRole admin = IAdministratorRole(vasp);
+        admin.addAdministrator(msg.sender);
 
         IVaspManager last = IVaspManager(vasp);
         last.setName(name);
@@ -53,6 +53,8 @@ contract VaspBuilder is Initializable, IVaspBuilder {
 
         Ownable own = Ownable(vasp);
         own.transferOwnership(msg.sender);
+
+        admin.renounceAdministrator();
 
         _lasts[msg.sender] = vasp;
 

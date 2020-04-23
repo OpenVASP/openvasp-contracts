@@ -23,6 +23,7 @@ jobs:
     - run: truffle compile
     - run: echo "ROPSTEN_NODE_URL=${{ secrets.ROPSTEN_NODE_URL }}" >> .env
     - run: echo "PRIVATE_KEY=${{ secrets.PRIVATE_KEY }}" >> .env
+    - run: echo "ETHERSCAN_API_KEY=${{ secrets.ETHERSCAN_API_KEY }}" >> .env
     - run: truffle migrate --network ropsten
     - run: truffle run verify VASP --network ropsten
     - run: truffle run verify VaspFactory --network ropsten
