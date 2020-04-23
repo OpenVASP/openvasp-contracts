@@ -54,7 +54,7 @@ contract AdministratorRole is Initializable, Context, IAdministratorRole {
     }
 
     function renounceAdministrator()
-        public
+        external
     {
         _removeAdministrator(_msgSender());
     }
