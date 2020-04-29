@@ -3,8 +3,9 @@ pragma solidity ^0.5.0;
 import "@openzeppelin/contracts-ethereum-package/contracts/access/Roles.sol";
 import "@openzeppelin/contracts-ethereum-package/contracts/GSN/Context.sol";
 import "@openzeppelin/upgrades/contracts/Initializable.sol";
+import "./IAdministratorRole.sol";
 
-contract AdministratorRole is Initializable, Context {
+contract AdministratorRole is Initializable, Context, IAdministratorRole {
     using Roles for Roles.Role;
 
 
@@ -53,7 +54,7 @@ contract AdministratorRole is Initializable, Context {
     }
 
     function renounceAdministrator()
-        public
+        external
     {
         _removeAdministrator(_msgSender());
     }

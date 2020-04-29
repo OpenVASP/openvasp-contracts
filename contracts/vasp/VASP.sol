@@ -3,13 +3,14 @@ pragma solidity ^0.5.0;
 import "@openzeppelin/contracts-ethereum-package/contracts/GSN/Context.sol";
 import "@openzeppelin/contracts-ethereum-package/contracts/ownership/Ownable.sol";
 import "@openzeppelin/upgrades/contracts/Initializable.sol";
-import "./access/roles/AdministratorRole.sol";
-import "./utils/Addresses.sol";
-import "./utils/Channels.sol";
-import "./utils/Strings.sol";
+import "../access/roles/AdministratorRole.sol";
+import "../utils/Addresses.sol";
+import "../utils/Channels.sol";
+import "../utils/Strings.sol";
 import "./IVASP.sol";
+import "./IVaspManager.sol";
 
-contract VASP is Initializable, Context, Ownable, AdministratorRole, IVASP {
+contract VASP is Initializable, Context, Ownable, AdministratorRole, IVASP, IVaspManager {
     using Addresses for Addresses.AddressSet;
     using Addresses for address;
     using Channels for Channels.ChannelSet;
@@ -50,17 +51,13 @@ contract VASP is Initializable, Context, Ownable, AdministratorRole, IVASP {
      *
      */
     function initialize(
-        address owner,
-        address[] memory initialAdministrators
+        address owner
     )
         public
         initializer
     {
         Ownable.initialize(owner);
-
-        for(uint256 i = 0; i < initialAdministrators.length; i++) {
-            _addAdministrator(initialAdministrators[i]);
-        }
+        AdministratorRole.initialize(owner);
     }
 
     /*
@@ -313,7 +310,7 @@ contract VASP is Initializable, Context, Ownable, AdministratorRole, IVASP {
     /*
      * @dev Sets the VASP postal address.
      */
-    function setPostalAddress(
+    function setPostalAddressLine(
         string calldata addressLine,
         string calldata postCode,
         string calldata town,
