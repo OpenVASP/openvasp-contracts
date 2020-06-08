@@ -16,9 +16,5 @@ jobs:
       uses: actions/setup-node@v1
       with:
         node-version: 10.x
-    - run: npm install -g truffle
-    - run: npm install -g ganache-cli
     - run: npm install
-    - run: truffle compile
-    - run: ganache-cli > /dev/null &
-    - run: truffle test
+    - run: npm test

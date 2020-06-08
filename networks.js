@@ -12,11 +12,11 @@ module.exports = {
       gasPrice: 5e9,
       networkId: '*',
     },
-    ropsten: {
-      provider: function() {
-        return new HDWalletProvider(process.env.ROPSTEN_PRIVATE_KEY, process.env.ROPSTEN_NODE_URL);
+    ethereum: {
+      provider: function () {
+        return new HDWalletProvider(process.env.PRIVATE_KEY, process.env.NODE_URL);
       },
-      network_id: '3'
+      network_id: '*'
     }
   }
 };

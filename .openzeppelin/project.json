@@ -1,20 +1,25 @@
 {
   "manifestVersion": "2.2",
   "contracts": {
-    "VASP": "VASP"
+    "VASPIndex": "VASPIndex"
   },
   "dependencies": {},
-  "name": "open-vasp",
-  "version": "0.0.1-beta.1",
-  "telemetryOptIn": true,
+  "name": "vasp-contracts",
+  "version": "2.0.0",
   "compiler": {
-    "manager": "openzeppelin",
-    "solcVersion": "0.5.16",
     "compilerSettings": {
       "optimizer": {
         "enabled": false,
         "runs": "200"
       }
-    }
-  }
+    },
+    "typechain": {
+      "enabled": false
+    },
+    "manager": "openzeppelin",
+    "solcVersion": "0.6.8",
+    "artifactsDir": "build/contracts",
+    "contractsDir": "contracts"
+  },
+  "telemetryOptIn": true
 }
