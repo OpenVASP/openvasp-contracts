@@ -25,3 +25,4 @@ coverageEnv
 
 # runtime data
 allFiredEvents
+.openzeppelin/ropsten.json
