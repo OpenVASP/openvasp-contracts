@@ -10,13 +10,20 @@ const [ vaspIndexDeployerAccount, firstOwnerAccount, secondOwnerAccount, anybody
 
 Before(async function() {
     this.contracts = {
-        vaspIndex: await VASPIndex.new()
+        vaspIndex: await VASPIndex.new(vaspIndexDeployerAccount)
     }
 
     this.state.vaspCodeThatIsUsed    = "0x1000000000000000";
     this.state.vaspCodeThatIsNotUsed = "0x2000000000000000";
 
-    await this.contracts.vaspIndex.createVASPContract(firstOwnerAccount, this.state.vaspCodeThatIsUsed, { from: vaspIndexDeployerAccount });
+    await this.contracts.vaspIndex.createVASPContract(
+        this.state.vaspCodeThatIsUsed,
+        firstOwnerAccount,
+        "0x",
+        "",
+        "",
+        "",
+        { from: vaspIndexDeployerAccount });
 });
 
 Given(/^I\'m (.*)$/, function (role) {
@@ -69,7 +76,14 @@ When(/^creating a VASP contract$/, async function() {
     };
 
     try {
-        this.tx.result = await this.contracts.vaspIndex.createVASPContract(this.inputs.ownerAddress, this.inputs.vaspCode, { from: this.inputs.from });
+        this.tx.result = await this.contracts.vaspIndex.createVASPContract(
+            this.inputs.vaspCode,
+            this.inputs.ownerAddress,
+            "0x",
+            "",
+            "",
+            "",
+            { from: this.inputs.from });
     } catch (error) {
         this.tx.error = error.message;
     }

@@ -1,36 +1,99 @@
 //SPDX-License-Identifier: MIT
 
-pragma solidity ^0.6.8;
+pragma solidity 0.6.10;
 
-import "./VASP.sol";
+import "@openzeppelin/contracts/utils/Pausable.sol";
+import "./access/OwnerRole.sol";
+import "./VASPContract.sol";
 
-contract VASPIndex {
+contract VASPIndex is Pausable, OwnerRole {
     mapping (bytes8 => address) private _vaspAddresses;
     mapping (address => bytes8) private _vaspCodes;
-    
-    event VASPcontractCreated(address indexed vaspAddress, bytes8 vaspCode, bytes8 indexed vaspCodeHash);
 
-    function createVASPContract(address owner, bytes8 vaspCode) public returns (address) {
-        require(vaspCode != bytes8(0), "VASPIndex: vaspCode is empty.");
-        require(_vaspAddresses[vaspCode] == address(0), "VASPIndex: vaspCode is already in use.");
+    event VASPContractCreated(bytes8 indexed vaspCode, address indexed vaspAddress);
 
-        VASP vaspContract = new VASP(owner);
+    modifier onlyVASPContract() {
+        require(_vaspCodes[_msgSender()] == bytes8(0), "VASPIndex: caller is not a VASP contract");
+        _;
+    }
 
+    constructor
+    (
+        address owner
+    )
+        public
+        OwnerRole(owner)
+    {
+    }
+
+    function createVASPContract
+    (
+        bytes8 vaspCode,
+        address owner,
+        bytes4 channels,
+        string calldata transportKey,
+        string calldata messageKey,
+        string calldata signingKey
+    )
+        external
+        whenNotPaused
+        returns (address)
+    {
+        require(vaspCode != bytes8(0), "VASPIndex: vaspCode is empty");
+        require(_vaspAddresses[vaspCode] == address(0), "VASPIndex: vaspCode is already in use");
+
+        VASPContract vaspContract = new VASPContract(vaspCode, owner, channels, transportKey, messageKey, signingKey);
         address vaspAddress = address(vaspContract);
 
         _vaspCodes[vaspAddress] = vaspCode;
         _vaspAddresses[vaspCode] = vaspAddress;
 
-        emit VASPcontractCreated(vaspAddress, vaspCode, vaspCode);
+        emit VASPContractCreated(vaspCode, vaspAddress);
 
         return vaspAddress;
     }
 
-    function getVASPAddressByCode(bytes8 vaspCode) public view returns (address) {
+    function pause()
+        external
+        onlyOwner
+    {
+        _pause();
+    }
+
+    function terminate
+    (
+        address payable recipient
+    )
+        external
+        onlyOwner
+    {
+        selfdestruct(recipient);
+    }
+
+    function unpause()
+        external
+        onlyOwner
+    {
+        _unpause();
+    }
+
+    function getVASPAddressByCode
+    (
+        bytes8 vaspCode
+    )
+        external view
+        returns (address)
+    {
         return _vaspAddresses[vaspCode];
     }
 
-    function getVASPCodeByAddress(address vaspAddress) public view returns (bytes8) {
+    function getVASPCodeByAddress
+    (
+        address vaspAddress
+    )
+        external view
+        returns (bytes8)
+    {
         return _vaspCodes[vaspAddress];
     }
 }
