@@ -9,16 +9,16 @@ contract VASPContract is OwnerRole {
     string private _transportKey;
     string private _messageKey;
     string private _signingKey;
-    bytes8 private _vaspCode;
+    bytes4 private _vaspCode;
 
-    event ChannelsChanged(bytes8 indexed vaspCode, bytes4 previousChannels, bytes4 newChannels);
-    event TransportKeyChanged(bytes8 indexed vaspCode, string previousTransportKey, string newTransportKey);
-    event MessageKeyChanged(bytes8 indexed vaspCode, string previousMessageKey, string newMessageKey);
-    event SigningKeyChanged(bytes8 indexed vaspCode, string previousSigningKey, string newSigningKey);
+    event ChannelsChanged(bytes4 indexed vaspCode, bytes4 previousChannels, bytes4 newChannels);
+    event TransportKeyChanged(bytes4 indexed vaspCode, string previousTransportKey, string newTransportKey);
+    event MessageKeyChanged(bytes4 indexed vaspCode, string previousMessageKey, string newMessageKey);
+    event SigningKeyChanged(bytes4 indexed vaspCode, string previousSigningKey, string newSigningKey);
 
     constructor
     (
-        bytes8 vaspCode,
+        bytes4 vaspCode,
         address owner,
         bytes4 channels,
         string memory transportKey,
@@ -28,7 +28,7 @@ contract VASPContract is OwnerRole {
         public
         OwnerRole(owner)
     {
-        require(vaspCode != bytes8(0), "VASPContract: vaspCode is empty");
+        require(vaspCode != bytes4(0), "VASPContract: vaspCode is empty");
 
         _vaspCode = vaspCode;
 
@@ -108,7 +108,7 @@ contract VASPContract is OwnerRole {
 
     function vaspCode()
         external view
-        returns (bytes8)
+        returns (bytes4)
     {
         return _vaspCode;
     }

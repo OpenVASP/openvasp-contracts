@@ -1,25 +1,13 @@
 const { setWorldConstructor } = require('cucumber')
 
-class OpenVASPWorld {
+function OpenVASPWorld({ attach, parameters }) {
 
-  constructor() {
-      this.constants = {
-          EMPTY_VASP_CODE: '0x0000000000000000'
-      };
-      
-      this.contracts = {
-
-      }
-
-      this.inputs = {
-
-      };
-
-      this.state = {
-
-      }
-  }
-
+  this.attach = attach;
+  this.contracts = { };
+  this.inputs = { };
+  this.result = { };
+  this.parameters = parameters;
+  this.role = null;
 }
 
 setWorldConstructor(OpenVASPWorld)

@@ -7,13 +7,13 @@ import "./access/OwnerRole.sol";
 import "./VASPContract.sol";
 
 contract VASPIndex is Pausable, OwnerRole {
-    mapping (bytes8 => address) private _vaspAddresses;
-    mapping (address => bytes8) private _vaspCodes;
+    mapping (bytes4 => address) private _vaspAddresses;
+    mapping (address => bytes4) private _vaspCodes;
 
-    event VASPContractCreated(bytes8 indexed vaspCode, address indexed vaspAddress);
+    event VASPContractCreated(bytes4 indexed vaspCode, address indexed vaspAddress);
 
     modifier onlyVASPContract() {
-        require(_vaspCodes[_msgSender()] == bytes8(0), "VASPIndex: caller is not a VASP contract");
+        require(_vaspCodes[_msgSender()] == bytes4(0), "VASPIndex: caller is not a VASP contract");
         _;
     }
 
@@ -28,7 +28,7 @@ contract VASPIndex is Pausable, OwnerRole {
 
     function createVASPContract
     (
-        bytes8 vaspCode,
+        bytes4 vaspCode,
         address owner,
         bytes4 channels,
         string calldata transportKey,
@@ -39,7 +39,7 @@ contract VASPIndex is Pausable, OwnerRole {
         whenNotPaused
         returns (address)
     {
-        require(vaspCode != bytes8(0), "VASPIndex: vaspCode is empty");
+        require(vaspCode != bytes4(0), "VASPIndex: vaspCode is empty");
         require(_vaspAddresses[vaspCode] == address(0), "VASPIndex: vaspCode is already in use");
 
         VASPContract vaspContract = new VASPContract(vaspCode, owner, channels, transportKey, messageKey, signingKey);
@@ -79,7 +79,7 @@ contract VASPIndex is Pausable, OwnerRole {
 
     function getVASPAddressByCode
     (
-        bytes8 vaspCode
+        bytes4 vaspCode
     )
         external view
         returns (address)
@@ -92,7 +92,7 @@ contract VASPIndex is Pausable, OwnerRole {
         address vaspAddress
     )
         external view
-        returns (bytes8)
+        returns (bytes4)
     {
         return _vaspCodes[vaspAddress];
     }

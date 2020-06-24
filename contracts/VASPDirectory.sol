@@ -11,10 +11,22 @@ import "./VASPRegistry.sol";
 contract VASPDirectory is VASPRegistry, AdministratorRole, OwnerRole {
     using Strings for uint256;
 
-    mapping(bytes12 => bytes32) private _credentialsHashes;
+    mapping(bytes4 => bytes32) private _credentialsHashes;
 
-    event CredentialsInserted(bytes12 indexed vaspId, bytes32 indexed credentialsRef, bytes32 indexed credentialsHash, string credentials);
-    event CredentialsRevoked(bytes12 indexed vaspId, bytes32 indexed credentialsRef, bytes32 indexed credentialsHash);
+    event CredentialsInserted
+    (
+        bytes4 indexed vaspCode,
+        bytes32 indexed credentialsRef,
+        bytes32 indexed credentialsHash,
+        string credentials
+    );
+
+    event CredentialsRevoked
+    (
+        bytes4 indexed vaspCode,
+        bytes32 indexed credentialsRef,
+        bytes32 indexed credentialsHash
+    );
 
 
     constructor
@@ -31,35 +43,35 @@ contract VASPDirectory is VASPRegistry, AdministratorRole, OwnerRole {
 
     function insertCredentials
     (
-        bytes12 vaspId,
+        bytes4 vaspCode,
         string calldata credentials
     )
         external
         onlyAdministrator
     {
-        require(_credentialsHashes[vaspId] == bytes32(0), "VASPDirectory: credentials for the specified vaspId has already been added");
+        require(_credentialsHashes[vaspCode] == bytes32(0), "VASPDirectory: vaspCode has already been registered");
 
-        bytes32 credentialsHash = keccak256(bytes(credentials));
+        bytes32 credentialsHash = _calculateCredentialsHash(credentials);
 
-        _credentialsHashes[vaspId] = credentialsHash;
+        _credentialsHashes[vaspCode] = credentialsHash;
 
-        emit CredentialsInserted(vaspId, credentialsHash, credentialsHash, credentials);
+        emit CredentialsInserted(vaspCode, credentialsHash, credentialsHash, credentials);
     }
 
     function revokeCredentials
     (
-        bytes12 vaspId
+        bytes4 vaspCode
     )
         external
         onlyAdministrator
     {
-        require(_credentialsHashes[vaspId] != bytes32(0), "VASPDirectory: credentials for the specified vaspId do not exist");
+        bytes32 credentialsHash = _credentialsHashes[vaspCode];
 
-        bytes32 credentialsHash = _credentialsHashes[vaspId];
+        require(credentialsHash != bytes32(0), "VASPDirectory: vaspCode is not registered");
 
-        delete _credentialsHashes[vaspId];
+        delete _credentialsHashes[vaspCode];
 
-        emit CredentialsRevoked(vaspId, credentialsHash, credentialsHash);
+        emit CredentialsRevoked(vaspCode, credentialsHash, credentialsHash);
     }
 
     function terminate
@@ -74,13 +86,56 @@ contract VASPDirectory is VASPRegistry, AdministratorRole, OwnerRole {
 
     function getCredentialsRef
     (
-        bytes12 vaspId
+        bytes4 vaspCode
     )
         external override view
         returns (string memory credentialsRef, bytes32 credentialsHash)
     {
-        credentialsHash = _credentialsHashes[vaspId];
+        credentialsHash = _credentialsHashes[vaspCode];
 
-        return (string(abi.encodePacked(credentialsHash)), credentialsHash);
+        if (credentialsHash != bytes32(0)) {
+            credentialsRef = _convertBytes32ToHexString(credentialsHash);
+        } else {
+            credentialsRef = '';
+        }
+
+        return (credentialsRef, credentialsHash);
+    }
+
+    function _convertBytes32ToHexString
+    (
+        bytes32 input
+    )
+        private pure
+        returns (string memory)
+    {
+        bytes memory output = new bytes(66);
+
+        output[0] = '0';
+        output[1] = 'x';
+
+        for(uint i = 0; i < 32; i++) {
+            uint8 decimalValue = uint8(input[i]);
+            output[i * 2 + 2] = _hexChar(decimalValue / 16);
+            output[i * 2 + 3] = _hexChar(decimalValue % 16);
+        }
+
+        return string(output);
+    }
+
+    function _hexChar
+    (
+        uint8 decimalRepresentation
+    )
+        private pure
+        returns (bytes1)
+    {
+        require(decimalRepresentation < 16, "VASPDirectory: decimalRepresentation should be lower than 16");
+
+        if (uint8(decimalRepresentation) < 10) {
+            return bytes1(decimalRepresentation + 0x30);
+        }
+
+        return bytes1(decimalRepresentation + 0x57);
     }
 }
