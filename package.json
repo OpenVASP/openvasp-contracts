@@ -29,7 +29,9 @@
     "@openzeppelin/test-helpers": "0.5.6",
     "@truffle/hdwallet-provider": "1.0.35",
     "chai": "4.2.0",
+    "commander": "5.1.0",
     "cucumber": "6.0.5",
-    "dotenv": "8.2.0"
+    "dotenv": "8.2.0",
+    "shelljs": "^0.8.4"
   }
 }

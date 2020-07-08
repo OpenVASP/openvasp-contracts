@@ -4,8 +4,10 @@ const { expect } = require("chai");
 const { expectRevert, constants, expectEvent } = require('@openzeppelin/test-helpers');
 const { accounts, contract } = require('@openzeppelin/test-environment');
 
-const VASPIndex = contract.fromArtifact('VASPIndex');
+const VASPContractFactory = contract.fromArtifact('VASPContractFactory');
 const VASPDirectory = contract.fromArtifact('VASPDirectory');
+const VASPIndex = contract.fromArtifact('VASPIndex');
+
 
 const [ deployer, owner, newOwnerCandidate, administrator, regularUser ] = accounts;
 
@@ -28,6 +30,10 @@ Given(/^I\'m (.*)$/, function(role) {
 
 Given(/^VASP code is "(.*)"$/, function(vaspCode) {
     this.inputs.vaspCode = `0x${vaspCode}`;
+})
+
+Given(/^VASP identifier is "(.*)"$/, function(vaspId) {
+    this.inputs.vaspId = `0x${vaspId}`;
 })
 
 Then(/^transaction should succeed$/, function() {
@@ -58,11 +64,24 @@ Then(/^"(.*)" event should be logged$/, function(event) {
 // VASPIndex
 
 Before({tags: "@vasp-index"}, async function () {
+    this.contracts.vaspContractFactory = await VASPContractFactory.new(
+        { from: deployer }
+    );
+
     this.contracts.vaspIndex = await VASPIndex.new(
         owner,
+        this.contracts.vaspContractFactory.address,
         { from: deployer }
     );
 });
+
+Then(/^logged VASP code should be "(.*)"$/, function(vaspCode) {
+    expectEvent(
+        this.result.receipt,
+        this.currentEvent,
+        { vaspCode: `0x${vaspCode}00000000000000000000000000000000000000000000000000000000` }
+    );
+})
 
 // VASPDirectory
 
@@ -74,9 +93,9 @@ Before({tags: "@vasp-directory"}, async function () {
     );
 });
 
-Given(/^VASP with code "(.*)" registered in the directory with credentials from "(.*)"$/, async function(vaspCode, vaspCredentials) {
+Given(/^VASP with identifier "(.*)" registered in the directory with credentials from "(.*)"$/, async function(vaspId, vaspCredentials) {
     await this.contracts.vaspDirectory.insertCredentials(
-        `0x${vaspCode}`,
+        `0x${vaspId}`,
         fs.readFileSync(`./features/support/${vaspCredentials}`, 'utf8'),
         { from: administrator }
     );
@@ -89,7 +108,7 @@ Given(/^VASP credentials are specified in "(.*)"$/, function(vaspCredentials) {
 When(/^inserting VASP credentials$/, async function() {
     try {
         this.result = await this.contracts.vaspDirectory.insertCredentials(
-            this.inputs.vaspCode,
+            this.inputs.vaspId,
             this.inputs.vaspCredentials,
             { from: this.role }
         );
@@ -101,7 +120,7 @@ When(/^inserting VASP credentials$/, async function() {
 When(/^revoking VASP credentials$/, async function() {
     try {
         this.result = await this.contracts.vaspDirectory.revokeCredentials(
-            this.inputs.vaspCode,
+            this.inputs.vaspId,
             { from: this.role }
         );
     } catch(error) {
@@ -111,14 +130,14 @@ When(/^revoking VASP credentials$/, async function() {
 
 When(/^requesting VASP credentials reference$/, async function() {
     this.result = await this.contracts.vaspDirectory.getCredentialsRef(
-        this.inputs.vaspCode,
+        this.inputs.vaspId,
         { from: this.role }
     );
 })
 
 Then(/^credentials should be inserted$/, async function() {
     const callResult = await this.contracts.vaspDirectory.getCredentialsRef(
-        this.inputs.vaspCode,
+        this.inputs.vaspId,
         { from: regularUser }
     );
 
@@ -129,7 +148,7 @@ Then(/^credentials should be inserted$/, async function() {
 
 Then(/^credentials should be revoked$/, async function() {
     const callResult = await this.contracts.vaspDirectory.getCredentialsRef(
-        this.inputs.vaspCode,
+        this.inputs.vaspId,
         { from: regularUser }
     );
 
@@ -137,11 +156,11 @@ Then(/^credentials should be revoked$/, async function() {
     expect(callResult.credentialsHash).to.equal(EMPTY_BYTES32);
 })
 
-Then(/^logged VASP code should be "(.*)"$/, function(vaspCode) {
+Then(/^logged VASP identifier should be "(.*)"$/, function(vaspId) {
     expectEvent(
         this.result.receipt,
         this.currentEvent,
-        { vaspCode: `0x${vaspCode}00000000000000000000000000000000000000000000000000000000` }
+        { vaspId: `0x${vaspId}0000000000000000000000000000000000000000000000000000` }
     );
 })
 

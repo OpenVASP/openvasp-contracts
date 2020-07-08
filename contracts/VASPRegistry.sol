@@ -6,7 +6,7 @@ abstract contract VASPRegistry {
 
     function getCredentialsRef
     (
-        bytes4 vaspCode
+        bytes6 vaspId
     )
         external virtual view
         returns (string memory credentialsRef, bytes32 credentialsHash);

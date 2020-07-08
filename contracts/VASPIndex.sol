@@ -4,11 +4,12 @@ pragma solidity 0.6.10;
 
 import "@openzeppelin/contracts/utils/Pausable.sol";
 import "./access/OwnerRole.sol";
-import "./VASPContract.sol";
+import "./VASPContractFactory.sol";
 
 contract VASPIndex is Pausable, OwnerRole {
     mapping (bytes4 => address) private _vaspAddresses;
     mapping (address => bytes4) private _vaspCodes;
+    VASPContractFactory private _vaspContractFactory;
 
     event VASPContractCreated(bytes4 indexed vaspCode, address indexed vaspAddress);
 
@@ -19,11 +20,15 @@ contract VASPIndex is Pausable, OwnerRole {
 
     constructor
     (
-        address owner
+        address owner,
+        address vaspContractFactory
     )
         public
         OwnerRole(owner)
     {
+        require(vaspContractFactory != address(0), "VASPIndex: vaspContractFactory is the zero address");
+
+        _vaspContractFactory = VASPContractFactory(vaspContractFactory);
     }
 
     function createVASPContract
@@ -42,8 +47,7 @@ contract VASPIndex is Pausable, OwnerRole {
         require(vaspCode != bytes4(0), "VASPIndex: vaspCode is empty");
         require(_vaspAddresses[vaspCode] == address(0), "VASPIndex: vaspCode is already in use");
 
-        VASPContract vaspContract = new VASPContract(vaspCode, owner, channels, transportKey, messageKey, signingKey);
-        address vaspAddress = address(vaspContract);
+        address vaspAddress = _vaspContractFactory.create(vaspCode, owner, channels, transportKey, messageKey, signingKey);
 
         _vaspCodes[vaspAddress] = vaspCode;
         _vaspAddresses[vaspCode] = vaspAddress;

@@ -11,11 +11,11 @@ import "./VASPRegistry.sol";
 contract VASPDirectory is VASPRegistry, AdministratorRole, OwnerRole {
     using Strings for uint256;
 
-    mapping(bytes4 => bytes32) private _credentialsHashes;
+    mapping(bytes6 => bytes32) private _credentialsHashes;
 
     event CredentialsInserted
     (
-        bytes4 indexed vaspCode,
+        bytes6 indexed vaspId,
         bytes32 indexed credentialsRef,
         bytes32 indexed credentialsHash,
         string credentials
@@ -23,7 +23,7 @@ contract VASPDirectory is VASPRegistry, AdministratorRole, OwnerRole {
 
     event CredentialsRevoked
     (
-        bytes4 indexed vaspCode,
+        bytes6 indexed vaspId,
         bytes32 indexed credentialsRef,
         bytes32 indexed credentialsHash
     );
@@ -43,35 +43,35 @@ contract VASPDirectory is VASPRegistry, AdministratorRole, OwnerRole {
 
     function insertCredentials
     (
-        bytes4 vaspCode,
+        bytes6 vaspId,
         string calldata credentials
     )
         external
         onlyAdministrator
     {
-        require(_credentialsHashes[vaspCode] == bytes32(0), "VASPDirectory: vaspCode has already been registered");
+        require(_credentialsHashes[vaspId] == bytes32(0), "VASPDirectory: vaspId has already been registered");
 
         bytes32 credentialsHash = _calculateCredentialsHash(credentials);
 
-        _credentialsHashes[vaspCode] = credentialsHash;
+        _credentialsHashes[vaspId] = credentialsHash;
 
-        emit CredentialsInserted(vaspCode, credentialsHash, credentialsHash, credentials);
+        emit CredentialsInserted(vaspId, credentialsHash, credentialsHash, credentials);
     }
 
     function revokeCredentials
     (
-        bytes4 vaspCode
+        bytes6 vaspId
     )
         external
         onlyAdministrator
     {
-        bytes32 credentialsHash = _credentialsHashes[vaspCode];
+        bytes32 credentialsHash = _credentialsHashes[vaspId];
 
         require(credentialsHash != bytes32(0), "VASPDirectory: vaspCode is not registered");
 
-        delete _credentialsHashes[vaspCode];
+        delete _credentialsHashes[vaspId];
 
-        emit CredentialsRevoked(vaspCode, credentialsHash, credentialsHash);
+        emit CredentialsRevoked(vaspId, credentialsHash, credentialsHash);
     }
 
     function terminate
@@ -86,12 +86,12 @@ contract VASPDirectory is VASPRegistry, AdministratorRole, OwnerRole {
 
     function getCredentialsRef
     (
-        bytes4 vaspCode
+        bytes6 vaspId
     )
         external override view
         returns (string memory credentialsRef, bytes32 credentialsHash)
     {
-        credentialsHash = _credentialsHashes[vaspCode];
+        credentialsHash = _credentialsHashes[vaspId];
 
         if (credentialsHash != bytes32(0)) {
             credentialsRef = _convertBytes32ToHexString(credentialsHash);
@@ -134,8 +134,8 @@ contract VASPDirectory is VASPRegistry, AdministratorRole, OwnerRole {
 
         if (uint8(decimalRepresentation) < 10) {
             return bytes1(decimalRepresentation + 0x30);
+        } else {
+            return bytes1(decimalRepresentation + 0x57);
         }
-
-        return bytes1(decimalRepresentation + 0x57);
     }
 }
