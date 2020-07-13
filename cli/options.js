@@ -22,13 +22,21 @@ const hexStringOption  = (value, previous) => {
         throw(`${value} is not a valid hex string`);
     }
 
-    return `"${value}"`;
+    return value;
 }
 
 const modeOption = (value, previous) => {
     if (!Object.values(modes).includes(value)) {
         console.error(`Unxpected mode value: ${value}`);
         process.exit(-1);
+    }
+
+    return value;
+}
+
+const privateKeyOption  = (value, previous) => {
+    if (!/^[0-9a-fA-F]{64}$/.test(value)) {
+        throw(`${value} is not a valid private key string`);
     }
 
     return value;
@@ -42,11 +50,18 @@ const vaspCodeOption = (value, previous) => {
     return `0x${value}`;
 }
 
+const registerGenerateTxDataOnlyOption = (program) => {
+    program.option(
+        '--generate-tx-data-only',
+        ''
+    ); 
+}
+
 const registerProviderOptions = (program) => {
     program.option(
         '--private-key <private-key>',
         '',
-        hexStringOption);
+        privateKeyOption);
 
     program.option(
         '--rpc-node <rpc-node-url>',
@@ -54,6 +69,7 @@ const registerProviderOptions = (program) => {
 }
 
 module.exports = {
+    registerGenerateTxDataOnlyOption,
     registerProviderOptions,
     addressOption,
     channelsOption,

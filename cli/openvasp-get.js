@@ -22,10 +22,11 @@ program
     });
 
 program
-    .command('vasp-address')
+    .command('vasp-contract')
     .requiredOption('--vasp-index <vasp-index-address>', '', addressOption)
     .requiredOption('--vasp-code <vasp-code>', '', vaspCodeOption)
     .action(async (command) => {
+        const provider = getReadOnlyProvider(program);
         const callResult = await callContract(provider, vaspIndexArtifact, command.vaspIndex, 'getVASPAddressByCode', command.vaspCode);
         console.log(callResult);
     });
@@ -34,6 +35,7 @@ program
     .command('vasp-info')
     .requiredOption('--vasp-contract <vasp-contract-address>', '', addressOption)
     .action(async (command) => {
+        const provider = getReadOnlyProvider(program);
         console.log({
             vaspCode:    (await callContract(provider, vaspContractArtifact, command.vaspContract, 'vaspCode')).match(vaspCodeRegex)[1],
             channels:     await callContract(provider, vaspContractArtifact, command.vaspContract, 'channels'),

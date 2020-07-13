@@ -1,13 +1,18 @@
 {
-  "name": "vasp-contracts",
+  "name": "openvaspvasp-contracts",
   "version": "2.0.0",
   "description": "OpenVASP smart contracts",
   "scripts": {
-    "build": "npx oz compile",
     "test": "npx oz compile && npx cucumber-js",
-    "deploy-directory": "npx oz deploy VASPDirectory --kind regular",
-    "deploy-index": "npx oz deploy VASPIndex --kind regular"
+    "postinstall": "npx oz compile"
   },
+  "bin": {
+    "openvasp": "./cli/openvasp.js"
+  },
+  "files": [
+    "cli",
+    "contracts"
+  ],
   "keywords": [
     "solidity",
     "ethereum",
@@ -31,7 +36,6 @@
     "chai": "4.2.0",
     "commander": "5.1.0",
     "cucumber": "6.0.5",
-    "dotenv": "8.2.0",
-    "shelljs": "^0.8.4"
+    "dotenv": "8.2.0"
   }
 }
