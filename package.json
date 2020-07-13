@@ -1,5 +1,5 @@
 {
-  "name": "vasp-contracts",
+  "name": "openvaspvasp-contracts",
   "version": "2.0.0",
   "description": "OpenVASP smart contracts",
   "scripts": {
@@ -9,6 +9,10 @@
   "bin": {
     "openvasp": "./cli/openvasp.js"
   },
+  "files": [
+    "cli",
+    "contracts"
+  ],
   "keywords": [
     "solidity",
     "ethereum",
