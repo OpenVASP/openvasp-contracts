@@ -1,15 +1,15 @@
 #!/usr/bin/env node
 
 const program = require('commander');
-const Web3  = require('web3');
 const { deployContract } = require('./blockchain.js');
-const { registerProviderOptions, addressOption } = require('./options.js');
+const { registerGenerateTxDataOnlyOption, registerProviderOptions, addressOption } = require('./options.js');
 const { getProvider } = require('./provider.js');
 
 const vaspContractFactoryArtifact = require('../build/contracts/VASPContractFactory.json');
 const vaspDirectoryArtifact = require('../build/contracts/VASPDirectory.json');
 const vaspIndexArtifact = require('../build/contracts/VASPIndex.json');
 
+registerGenerateTxDataOnlyOption(program);
 registerProviderOptions(program);
 
 program
@@ -18,15 +18,20 @@ program
         try {
             const provider = getProvider(program);
 
-            console.log('Deploying VASP Contract Factory...')
-            const vaspContractFactoryAddress = await deployContract(provider, vaspContractFactoryArtifact);
-            console.log('- done');
-            console.log(vaspContractFactoryAddress);
-            process.exit();
+            if (provider !== null) {
+                console.log('Deploying VASP Contract Factory...');
+            }
+
+            const deployContractResult = await deployContract(provider, vaspContractFactoryArtifact);
+
+            if (provider !== null) {
+                processSuccess(deployContractResult);
+            } else {
+                outputDeployContractGuide(deployContractResult);
+            }
+
         } catch(error) {
-            console.log('- failed');
-            console.log(error);
-            process.exit(-1);
+            processError(error);
         }
     });
 
@@ -38,15 +43,20 @@ program
         try {
             const provider = getProvider(program);
 
-            console.log('Deploying VASP Directory...')
-            const vaspDirectoryAddress = await deployContract(provider, vaspDirectoryArtifact, command.owner, command.administrator);
-            console.log('- done');
-            console.log(vaspDirectoryAddress);
-            process.exit();
+            if (provider !== null) {
+                console.log('Deploying VASP Directory...');
+            }
+
+            const deployContractResult = await deployContract(provider, vaspDirectoryArtifact, command.owner, command.administrator);
+
+            if (provider !== null) {
+                processSuccess(deployContractResult);
+            } else {
+                outputDeployContractGuide(deployContractResult);
+            }
+            
         } catch(error) {
-            console.log('- failed');
-            console.error(error);
-            process.exit(-1);
+            processError(error);
         }
     });
 
@@ -59,23 +69,46 @@ program
             const provider = getProvider(program);
 
             if (!command.vaspContractFactory) {
-                console.log('Deploying VASP Contract Factory (prerequisite)...')
-                command.vaspContractFactory = await deployContract(provider, vaspContractFactoryArtifact);
-                console.log('- done');    
+                if (provider !== null) {
+                    console.log('Deploying VASP Contract Factory (prerequisite)...')
+                    command.vaspContractFactory = await deployContract(provider, vaspContractFactoryArtifact);
+                    console.log('- done');    
+                    console.log('Deploying VASP Index...')
+                } else {
+                    throw('error: required option \'--vasp-contract-factory <factory-address>\' not specified');
+                }
             }
 
-            console.log('Deploying VASP Index...')
-            const vaspIndexAddress = await deployContract(provider, vaspIndexArtifact, command.owner, command.vaspContractFactory);
-            console.log('- done');
-            console.log(vaspIndexAddress);
-            process.exit();
+            const deployContractResult = await deployContract(provider, vaspIndexArtifact, command.owner, command.vaspContractFactory);
+
+            if (provider !== null) {
+                processSuccess(deployContractResult);
+            } else {
+                outputDeployContractGuide(deployContractResult);
+            }
 
         } catch(error) {
-            console.log('- failed');
-            console.error(error);
-            process.exit(-1);
+            processError(error);
         }
     });
 
 program
     .parse(process.argv);
+
+function processError(error) {
+    console.log(error);
+    process.exit(-1);
+}
+    
+function processSuccess(result) {
+    console.log('- done');
+    console.log(result);
+    process.exit();
+}
+    
+function outputDeployContractGuide(txData) {
+    console.log('Send contract deployment transaction with a following data:');
+    console.log();
+    console.log(txData);
+    process.exit();
+}

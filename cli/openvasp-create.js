@@ -2,11 +2,12 @@
 
 const program = require('commander');
 const { sendTransaction } = require('./blockchain.js');
-const { registerProviderOptions, addressOption, channelsOption, hexStringOption, vaspCodeOption } = require('./options.js');
+const { registerGenerateTxDataOnlyOption, registerProviderOptions, addressOption, channelsOption, hexStringOption, vaspCodeOption } = require('./options.js');
 const { getProvider } = require('./provider.js');
 
 const vaspIndexArtifact = require('../build/contracts/VASPIndex.json');
 
+registerGenerateTxDataOnlyOption(program);
 registerProviderOptions(program);
 
 program
@@ -20,10 +21,14 @@ program
     .requiredOption('--signing-key <signing-key>', '', hexStringOption)
     .action(async (command) => {
         try {
+
             const provider = getProvider(program);
 
-            console.log('Creating VASP Contract...')
-            const contractCreationRersult = await sendTransaction(
+            if (provider !== null) {
+                console.log('Creating VASP Contract...')
+            }
+
+            const sendTransactionResult = await sendTransaction(
                 provider,
                 vaspIndexArtifact,
                 command.vaspIndex,
@@ -36,15 +41,38 @@ program
                 command.signingKey
             );
 
-            console.log('- done');
-            console.log(contractCreationRersult.events['VASPContractCreated'].returnValues['vaspAddress']);
-            process.exit();
+            if (provider !== null) {
+                processSuccess(sendTransactionResult.events['VASPContractCreated'].returnValues['vaspAddress']);
+            } else {
+                outputSendTransactionGuide(sendTransactionResult, command.vaspIndex);
+            }
+
         } catch(error) {
-            console.log('- failed');
-            console.log(error);
-            process.exit(-1);
+            processError(error);
         }
     });
 
 program
     .parse(process.argv);
+
+function processError(error) {
+    console.log(error);
+    process.exit(-1);
+}
+
+function processSuccess(result) {
+    console.log('- done');
+    console.log(result);
+    process.exit();
+}
+
+function outputSendTransactionGuide(txData, contractAddress) {
+    console.log('Send transaction with a following data:');
+    console.log();
+    console.log(txData);
+    console.log();
+    console.log('to the following address:')
+    console.log();
+    console.log(contractAddress);
+    process.exit();
+}
