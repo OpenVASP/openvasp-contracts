@@ -1,6 +1,6 @@
 {
-  "name": "openvaspvasp-contracts",
-  "version": "2.0.0",
+  "name": "@openvasp/contracts",
+  "version": "2.0.0-rc.1",
   "description": "OpenVASP smart contracts",
   "scripts": {
     "test": "npx oz compile && npx cucumber-js",
