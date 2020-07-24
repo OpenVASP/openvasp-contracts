@@ -66,7 +66,7 @@ openvasp deploy vasp-index
 #### Create VASP Contract
 
 ```
-openvasp deploy vasp-contract
+openvasp create vasp-contract
 ```
 
 Options:
