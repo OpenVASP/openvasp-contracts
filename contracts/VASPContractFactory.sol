@@ -1,6 +1,6 @@
 //SPDX-License-Identifier: MIT
 
-pragma solidity 0.6.10;
+pragma solidity 0.6.12;
 
 import "./VASPContract.sol";
 
@@ -11,9 +11,9 @@ contract VASPContractFactory {
         bytes4 vaspCode,
         address owner,
         bytes4 channels,
-        string memory transportKey,
-        string memory messageKey,
-        string memory signingKey
+        bytes memory transportKey,
+        bytes memory messageKey,
+        bytes memory signingKey
     )
         external
         returns (address)

@@ -1,6 +1,6 @@
 //SPDX-License-Identifier: MIT
 
-pragma solidity 0.6.10;
+pragma solidity 0.6.12;
 
 import "@openzeppelin/contracts/utils/Pausable.sol";
 import "./access/OwnerRole.sol";
@@ -36,9 +36,9 @@ contract VASPIndex is Pausable, OwnerRole {
         bytes4 vaspCode,
         address owner,
         bytes4 channels,
-        string calldata transportKey,
-        string calldata messageKey,
-        string calldata signingKey
+        bytes calldata transportKey,
+        bytes calldata messageKey,
+        bytes calldata signingKey
     )
         external
         whenNotPaused

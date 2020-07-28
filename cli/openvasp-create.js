@@ -2,7 +2,7 @@
 
 const program = require('commander');
 const { sendTransaction } = require('./blockchain.js');
-const { registerGenerateTxDataOnlyOption, registerProviderOptions, addressOption, channelsOption, hexStringOption, vaspCodeOption } = require('./options.js');
+const { registerGenerateTxDataOnlyOption, registerProviderOptions, addressOption, channelsOption, compressedPublicKeyOption, vaspCodeOption } = require('./options.js');
 const { getProvider } = require('./provider.js');
 
 const vaspIndexArtifact = require('../build/contracts/VASPIndex.json');
@@ -16,9 +16,9 @@ program
     .requiredOption('--vasp-code <vasp-code>', '', vaspCodeOption)
     .requiredOption('--owner <owner-address>', '', addressOption)
     .requiredOption('--channels <channels>', '', channelsOption)
-    .requiredOption('--transport-key <transport-key>', '', hexStringOption)
-    .requiredOption('--message-key <message-key>', '', hexStringOption)
-    .requiredOption('--signing-key <signing-key>', '', hexStringOption)
+    .requiredOption('--transport-key <transport-key>', '', compressedPublicKeyOption)
+    .requiredOption('--message-key <message-key>', '', compressedPublicKeyOption)
+    .requiredOption('--signing-key <signing-key>', '', compressedPublicKeyOption)
     .action(async (command) => {
         try {
 

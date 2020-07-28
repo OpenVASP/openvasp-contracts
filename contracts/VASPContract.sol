@@ -1,34 +1,37 @@
 //SPDX-License-Identifier: MIT
 
-pragma solidity 0.6.10;
+pragma solidity 0.6.12;
 
 import "./access/OwnerRole.sol";
 
 contract VASPContract is OwnerRole {
     bytes4 private _channels;
-    string private _transportKey;
-    string private _messageKey;
-    string private _signingKey;
+    bytes private _transportKey;
+    bytes private _messageKey;
+    bytes private _signingKey;
     bytes4 private _vaspCode;
 
     event ChannelsChanged(bytes4 indexed vaspCode, bytes4 previousChannels, bytes4 newChannels);
-    event TransportKeyChanged(bytes4 indexed vaspCode, string previousTransportKey, string newTransportKey);
-    event MessageKeyChanged(bytes4 indexed vaspCode, string previousMessageKey, string newMessageKey);
-    event SigningKeyChanged(bytes4 indexed vaspCode, string previousSigningKey, string newSigningKey);
+    event TransportKeyChanged(bytes4 indexed vaspCode, bytes previousTransportKey, bytes newTransportKey);
+    event MessageKeyChanged(bytes4 indexed vaspCode, bytes previousMessageKey, bytes newMessageKey);
+    event SigningKeyChanged(bytes4 indexed vaspCode, bytes previousSigningKey, bytes newSigningKey);
 
     constructor
     (
         bytes4 vaspCode,
         address owner,
         bytes4 channels,
-        string memory transportKey,
-        string memory messageKey,
-        string memory signingKey
+        bytes memory transportKey,
+        bytes memory messageKey,
+        bytes memory signingKey
     )
         public
         OwnerRole(owner)
     {
         require(vaspCode != bytes4(0), "VASPContract: vaspCode is empty");
+        require(_isValidKey(transportKey), "VASPContract: transportKey is invalid");
+        require(_isValidKey(messageKey), "VASPContract: messageKey is invalid");
+        require(_isValidKey(signingKey), "VASPContract: signingKey is invalid");
 
         _vaspCode = vaspCode;
 
@@ -50,31 +53,37 @@ contract VASPContract is OwnerRole {
 
     function setTransportKey
     (
-        string calldata newTransportKey
+        bytes calldata newTransportKey
     )
         external
         onlyOwner
     {
+        require(_isValidKey(newTransportKey), "VASPContract: newTransportKey is invalid");
+
         _setTransportKey(newTransportKey);
     }
 
     function setMessageKey
     (
-        string calldata newMessageKey
+        bytes calldata newMessageKey
     )
         external
         onlyOwner
     {
+        require(_isValidKey(newMessageKey), "VASPContract: newMessageKey is invalid");
+
         _setMessageKey(newMessageKey);
     }
 
     function setSigningKey
     (
-        string calldata newSigningKey
+        bytes calldata newSigningKey
     )
         external
         onlyOwner
     {
+        require(_isValidKey(newSigningKey), "VASPContract: newSigningKey is invalid");
+
         _setSigningKey(newSigningKey);
     }
 
@@ -87,21 +96,21 @@ contract VASPContract is OwnerRole {
 
     function transportKey()
         external view
-        returns (string memory)
+        returns (bytes memory)
     {
         return _transportKey;
     }
 
     function messageKey()
         external view
-        returns (string memory)
+        returns (bytes memory)
     {
         return _messageKey;
     }
 
     function signingKey()
         external view
-        returns (string memory)
+        returns (bytes memory)
     {
         return _signingKey;
     }
@@ -127,7 +136,7 @@ contract VASPContract is OwnerRole {
 
     function _setTransportKey
     (
-        string memory newTransportKey
+        bytes memory newTransportKey
     )
         private
     {
@@ -139,7 +148,7 @@ contract VASPContract is OwnerRole {
 
     function _setMessageKey
     (
-        string memory newMessageKey
+        bytes memory newMessageKey
     )
         private
     {
@@ -151,7 +160,7 @@ contract VASPContract is OwnerRole {
 
     function _setSigningKey
     (
-        string memory newSigningKey
+        bytes memory newSigningKey
     )
         private
     {
@@ -163,12 +172,22 @@ contract VASPContract is OwnerRole {
 
     function _areNotEqual
     (
-        string memory left,
-        string memory right
+        bytes memory left,
+        bytes memory right
     )
         private pure
         returns (bool)
     {
-        return keccak256(bytes(left)) != keccak256(bytes(right));
+        return keccak256(left) != keccak256(right);
+    }
+
+    function _isValidKey
+    (
+        bytes memory key
+    )
+        private pure
+        returns (bool)
+    {
+        return key.length == 33 && (key[0] == 0x02 || key[0] == 0x03);
     }
 }
