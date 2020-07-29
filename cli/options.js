@@ -17,6 +17,14 @@ const channelsOption = (value, previous) => {
     return value;
 }
 
+const compressedPublicKeyOption = (value, previous) => {
+    if (!/^0x0(2|3)[0-9a-fA-F]{64}$/.test(value)) {
+        throw(`${value} is not a valid compressed public key`);
+    }
+
+    return value;
+}
+
 const hexStringOption  = (value, previous) => {
     if (!/^0x[0-9a-fA-F]*$/.test(value)) {
         throw(`${value} is not a valid hex string`);
