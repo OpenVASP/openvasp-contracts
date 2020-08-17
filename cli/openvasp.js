@@ -9,7 +9,8 @@ program
 program
     .command('create', 'create OpenVASP ecosystem smart contract')
     .command('deploy', 'deploy OpenVASP ecosystem smart contract')
-    .command('get', 'get infromation from OpenVASP ecosystem');
+    .command('get', 'get infromation from OpenVASP ecosystem')
+    .command('insert', 'save infromation in OpenVASP ecosystem');
 
 program
     .parse(process.argv);

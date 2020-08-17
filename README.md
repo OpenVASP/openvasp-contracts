@@ -85,6 +85,28 @@ Options:
 
 `--signing-key <signing-key>` - string containing hexadecimal representation of a signing key
 
+### Inserting Data
+
+Common options:
+
+`--generate-tx-data-only` - instead of transaction execution, CLI will ouput tx-data only. This tx-data can be used to deploy smart contract/execute operation manually with a suitable wallet software.
+
+`--private-key <private-key>` - sign transaction with a specified private key.
+
+`--rpc-node <rpc-node-url>` - send transaction via specified rpc node url.
+
+#### Inserting VASP Credentials
+
+```
+openvasp insert directory-credentials
+```
+
+`--vasp-directory <vasp-directory-address>` - VASP Directory instance address.
+
+`--vasp-id <vasp-id>` - VASP id.
+
+`--vasp-credentials <vasp-credentials-file-path>` - path to a file containing VASP credentials.
+
 ### Fetching Data
 
 Common options:
