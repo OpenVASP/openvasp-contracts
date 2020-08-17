@@ -1,3 +1,4 @@
+const fs = require('fs');
 const Web3  = require('web3');
 const web3 = new Web3();
 
@@ -23,6 +24,14 @@ const compressedPublicKeyOption = (value, previous) => {
     }
 
     return value;
+}
+
+const fileOption = (value, previous) => {
+    if (fs.existsSync(value)) {
+        return fs.readFileSync(value, 'utf8');
+    } else {
+        throw(`File does not exist: ${value}`);
+    }
 }
 
 const hexStringOption  = (value, previous) => {
@@ -58,6 +67,14 @@ const vaspCodeOption = (value, previous) => {
     return `0x${value}`;
 }
 
+const vaspIdOption = (value, previous) => {
+    if (!/^[0-9a-fA-F]{12}$/.test(value)) {
+        throw(`${value} is not a VASP id`);
+    }
+
+    return `0x${value}`;
+}
+
 const registerGenerateTxDataOnlyOption = (program) => {
     program.option(
         '--generate-tx-data-only',
@@ -81,7 +98,10 @@ module.exports = {
     registerProviderOptions,
     addressOption,
     channelsOption,
+    compressedPublicKeyOption,
+    fileOption,
     hexStringOption,
     modeOption,
-    vaspCodeOption
+    vaspCodeOption,
+    vaspIdOption
 }
