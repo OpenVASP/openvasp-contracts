@@ -1,10 +1,12 @@
 {
   "name": "@openvasp/contracts",
-  "version": "2.0.0-rc.5",
+  "version": "2.0.0-rc.6",
   "description": "OpenVASP smart contracts",
   "scripts": {
+    "extract-abis": "node ./scripts/extract-abis.js",
     "test": "npx oz compile && npx cucumber-js",
-    "postinstall": "npx oz compile"
+    "postinstall": "npx oz compile",
+    "precommit": "npx oz compile && npm run extract-abis && git add dist/"
   },
   "bin": {
     "openvasp": "./cli/openvasp.js"
