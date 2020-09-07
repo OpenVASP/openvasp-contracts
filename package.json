@@ -1,6 +1,6 @@
 {
   "name": "@openvasp/contracts",
-  "version": "2.0.0-rc.8",
+  "version": "2.0.0-rc.9",
   "description": "OpenVASP smart contracts",
   "scripts": {
     "extract-abis": "node ./scripts/extract-abis.js",
