@@ -5,7 +5,7 @@
   "scripts": {
     "extract-abis": "node ./scripts/extract-abis.js",
     "test": "npx oz compile && npx cucumber-js",
-    "postinstall": "npx oz compile",
+    "postinstall": "npx oz compile --no-interactive",
     "precommit": "npx oz compile && npm run extract-abis && git add dist/"
   },
   "bin": {
